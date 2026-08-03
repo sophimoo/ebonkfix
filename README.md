@@ -21,8 +21,3 @@ Run the Gradle `build` task and copy the generated jar from `build/libs/` into y
 ## Credits
 
 Much of the code (Highway Obstacle Passer, portal trap detection, the `Entity`/`LivingEntity`/`KeyBinding` mixins, and helpers) is adapted from [meteor-stashhunting-addon](https://github.com/miles352/meteor-stashhunting-addon) — many thanks to [miles352](https://github.com/miles352) for their addon.
-
-## License
-
-Original template portions: CC0 1.0 Universal
-Additional code and modifications: GNU GPL v3.0 or later
