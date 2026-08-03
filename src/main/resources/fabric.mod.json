@@ -1,27 +1,27 @@
 {
   "schemaVersion": 1,
-  "id": "addon-template",
+  "id": "ebonkfix",
   "version": "${version}",
-  "name": "Addon Template",
-  "description": "An addon template for Meteor Client addons.",
+  "name": "Ebonkfix",
+  "description": "ebonkfix for meteor for oldest anarchy server in mc",
   "authors": [
-    "seasnail"
+    "Sophimoo"
   ],
   "contact": {
-    "repo": "https://github.com/MeteorDevelopment/meteor-addon-template"
+    "repo": "https://github.com/sophimoo/ebonkfix"
   },
-  "icon": "assets/template/icon.png",
+  "icon": "assets/ebonkfix/icon.png",
   "environment": "client",
   "entrypoints": {
     "meteor": [
-      "com.example.addon.AddonTemplate"
+      "me.sophimoo.ebonkfix.Ebonkfix"
     ]
   },
   "mixins": [
-    "addon-template.mixins.json"
+    "ebonkfix.mixins.json"
   ],
   "custom": {
-    "meteor-client:color": "225,25,25"
+    "meteor-client:color": "90,140,90"
   },
   "depends": {
     "java": ">=21",

@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "me.sophimoo.ebonkfix.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "ElytraFlyMixin",
+    "BounceMixin",
+    "KeyBindingMixin",
+    "EntityMixin",
+    "LivingEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

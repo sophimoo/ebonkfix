@@ -45,16 +45,10 @@ tasks {
         }
     }
 
-    jar {
-        val licenseSuffix = project.base.archivesName.get()
-        from("LICENSE") {
-            rename { "${it}_${licenseSuffix}" }
-        }
-    }
-
     java {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
     }
 
     withType<JavaCompile> {
