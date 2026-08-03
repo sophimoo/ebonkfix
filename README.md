@@ -5,14 +5,14 @@ A Meteor Client addon that improves the **bounce mode** in meteor.
 ## Features
 
 - **Bounce Mode** — improves the stock `Bounce` elytra with custom changes for the oldest anarchy server in minecraft.
-  - `Vanilla` (default) — emulates vanilla jump taps. No Grim flags, ~24 bps at low ping, 40 bps at 50+ ping
-  - `Packet` — restarts gliding every airborne tick via `START_FALL_FLYING`. ~40 bps at any ping, but will flag Grim ElytraA/B/C without viaversion to 1.20.5/6 and lower.
-- **Highway Obstacle Passer** — optional Baritone-driven pathing that pauses bounce input so Baritone keeps full control around obstacles. Custom start position, "away from start" direction, and distance settings are available.
+  - `Vanilla` 24 bps at low ping, 40 bps at 50+ ping
+  - `Packet` 40 bps at any ping, but will flag Grim ElytraA/B/C without viaversion to 1.20.5/6 and lower.
+- `Highway Obstacle Passer` Requires baritone
 
 ### Requirements
 
-- Minecraft / Meteor Client matching the versions declared in `gradle.properties` and `fabric.mod.json`.
-- Baritone (optional, soft dependency — only used when Obstacle Passer is enabled).
+- Minecraft 1.21.4 & Meteor 1.21.4 42
+- Baritone if you want to use obstacle passer
 
 ### Building
 
