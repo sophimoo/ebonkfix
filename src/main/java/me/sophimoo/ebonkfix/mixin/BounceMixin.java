@@ -58,10 +58,15 @@ public abstract class BounceMixin {
 
         if (enabled) {
             if (BounceSettings.bounceMode.get() == BounceMode.Packet) {
-                // Holding jump means vanilla's rising-edge check never passes, so send the packet
-                // manually (no-ops on the ground or while gliding).
-                wantJump = true;
-                sendStartFlyingPacket(mc, player);
+                // jump is held on the ground and while airborne but not gliding,
+                // released once fall-flying. Holding jump means vanilla's rising-edge
+                // check never passes, so the redeploy packet is sent manually instead.
+                if (player.isOnGround()) {
+                    wantJump = true;
+                } else if (!player.isGliding()) {
+                    wantJump = true;
+                    sendStartFlyingPacket(mc, player);
+                }
             } else {
                 // Emulates how a vanilla player bounces: jump is held on the ground to bounce,
                 // released while gliding, and tapped midair to redeploy. Vanilla only sends
