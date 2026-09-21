@@ -7,6 +7,8 @@ A Meteor Client addon that improves the **bounce mode** in meteor.
 - **Bounce Mode** — improves the stock `Bounce` elytra with custom changes for the oldest anarchy server in minecraft.
   - `Vanilla` 24 bps at low ping, 40 bps at 50+ ping
   - `Packet` 40 bps at any ping, but will flag Grim ElytraA/B/C without viaversion to 1.20.5/6 and lower.
+  - `Smart Pitch` 48 bps travel B)
+  - `Spoof view` lets you look up and down while bouncing
 - `Highway Obstacle Passer` Requires baritone
 
 ### Requirements
