@@ -7,6 +7,7 @@ import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.systems.modules.movement.elytrafly.ElytraFly;
 import meteordevelopment.meteorclient.systems.modules.movement.elytrafly.modes.Bounce;
+import meteordevelopment.meteorclient.utils.misc.input.Input;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
@@ -73,6 +74,12 @@ public abstract class BounceMixin {
         prevWantJump = wantJump;
         BounceSettings.wantJump = wantJump;
 
+        // Mirror the forced keys into Meteor's Input state as vanilla Bounce.setPressed did. GUIMove
+        // re-derives key states from Input.isPressed while a screen is open, so without this it
+        // overwrites the bounce's input and pauses it.
+        Input.setKeyState(mc.options.forwardKey, enabled);
+        Input.setKeyState(mc.options.jumpKey, enabled && wantJump);
+
         if (enabled) player.setSprinting(true);
 
         ObstaclePasser.onTick(mc, player);
@@ -126,6 +133,12 @@ public abstract class BounceMixin {
         ObstaclePasser.onDeactivate();
         prevWantJump = false;
         BounceSettings.wantJump = false;
+
+        MinecraftClient mc = MinecraftClient.getInstance();
+        if (mc != null && mc.options != null) {
+            Input.setKeyState(mc.options.forwardKey, false);
+            Input.setKeyState(mc.options.jumpKey, false);
+        }
     }
 
     // https://github.com/miles352/meteor-stashhunting-addon/blob/1.21.1/src/main/java/com/stash/hunt/modules/ElytraFlyPlusPlus.java#L563-L569
