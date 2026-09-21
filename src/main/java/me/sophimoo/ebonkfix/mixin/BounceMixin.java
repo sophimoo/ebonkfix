@@ -24,6 +24,15 @@ public abstract class BounceMixin {
     @Unique
     private boolean prevWantJump = false;
 
+    // Real view rotation saved before spoof-view overwrites it, restored at Post so the camera
+    // renders the view the player is actually looking at while the server got the locked angles.
+    @Unique
+    private float realPitch;
+    @Unique
+    private float realYaw;
+    @Unique
+    private boolean restoreRotation = false;
+
     // Meteor's LivingEntityMixin#recastOnLand calls Bounce.recastElytra() whenever the gliding flag
     // flips off while ElytraFly is in Bounce mode, which sends START_FALL_FLYING with no jump edge.
     // Grim flags that as ElytraB "no jump", and the resulting resync re-triggers the recast,
@@ -50,6 +59,7 @@ public abstract class BounceMixin {
         MinecraftClient mc = MinecraftClient.getInstance();
         if (mc == null || mc.player == null) return;
         ClientPlayerEntity player = mc.player;
+        restoreRotation = false;
 
         // While the obstacle passer has Baritone pathing, the bounce input is released so Baritone
         // has full control of the player.
@@ -95,13 +105,24 @@ public abstract class BounceMixin {
         ElytraFly elytraFly = modules == null ? null : modules.get(ElytraFly.class);
         if (elytraFly == null) return;
 
+        // Save the real view, apply the locked bounce angles for the movement tick (so the packets
+        // carry them), then restore the view at Post before the frame renders.
+        if (BounceSettings.spoofView.get()) {
+            realPitch = player.getPitch();
+            realYaw = player.getYaw();
+            restoreRotation = true;
+        }
+
         float yaw = switch (elytraFly.yawLockMode.get()) {
             case None -> player.getYaw();
             case Smart -> Math.round((player.getYaw() + 1f) / 45f) * 45f;
             case Simple -> elytraFly.yaw.get().floatValue();
         };
+        float pitch = BounceSettings.smartPitch.get()
+            ? (player.getVelocity().y > -0.2 ? 90f : 4f)
+            : elytraFly.pitch.get().floatValue();
         player.setYaw(yaw);
-        player.setPitch(elytraFly.pitch.get().floatValue());
+        player.setPitch(pitch);
     }
 
     // Vanilla Bounce.onTick (Post) would send START_FALL_FLYING whenever jump is held and not
@@ -109,6 +130,20 @@ public abstract class BounceMixin {
     // Post handler while bounce mode is on.
     @Inject(method = "onTick", remap = false, at = @At("HEAD"), cancellable = true)
     private void bounceCancelPostTick(CallbackInfo ci) {
+        // TickEvent.Post fires after the movement packets, so the server already has the locked
+        // angles; restore the real view now for the camera (prevPitch/Yaw too, or the camera lerps
+        // from the locked values).
+        if (restoreRotation) {
+            MinecraftClient mc = MinecraftClient.getInstance();
+            if (mc != null && mc.player != null) {
+                mc.player.setYaw(realYaw);
+                mc.player.setPitch(realPitch);
+                mc.player.prevYaw = realYaw;
+                mc.player.prevPitch = realPitch;
+            }
+            restoreRotation = false;
+        }
+
         if (ci.isCancelled()) return; // another injector already took over - defer to it
 
         if (BounceSettings.bounceMode != null) {
@@ -138,6 +173,7 @@ public abstract class BounceMixin {
         ObstaclePasser.onDeactivate();
         prevWantJump = false;
         BounceSettings.wantJump = false;
+        restoreRotation = false;
 
         MinecraftClient mc = MinecraftClient.getInstance();
         if (mc != null && mc.options != null) {

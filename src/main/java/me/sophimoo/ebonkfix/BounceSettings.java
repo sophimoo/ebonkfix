@@ -10,6 +10,8 @@ import net.minecraft.item.Items;
 
 public final class BounceSettings {
     public static Setting<BounceMode> bounceMode;
+    public static Setting<Boolean> smartPitch;
+    public static Setting<Boolean> spoofView;
 
     /** Set by BounceMixin each pre-tick; consumed by KeyBindingMixin to force the jump key. */
     public static boolean wantJump = false;

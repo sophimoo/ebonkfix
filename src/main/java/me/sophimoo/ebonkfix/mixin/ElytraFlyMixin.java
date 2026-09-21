@@ -36,6 +36,26 @@ public abstract class ElytraFlyMixin {
             .build()
         );
 
+        BounceSettings.smartPitch = sg.add(new BoolSetting.Builder()
+            .name("smart-pitch")
+            // Pitches fully down (90) while descending and up (4) otherwise, getting up to ~48bps
+            // while bouncing instead of the ~40bps a fixed pitch gives.
+            .description("Calculates the best pitch for bounce, ignoring the pitch setting.")
+            .defaultValue(false)
+            .visible(() -> self.flightMode.get() == ElytraFlightModes.Bounce && BounceSettings.bounceMode != null)
+            .build()
+        );
+
+        BounceSettings.spoofView = sg.add(new BoolSetting.Builder()
+            .name("spoof-view")
+            // The locked pitch/yaw is only applied for the movement tick (and its packets), then the
+            // real view is restored before the frame renders, so you can look around freely.
+            .description("Lets you look around freely while the locked bounce angles stay on the server.")
+            .defaultValue(false)
+            .visible(() -> self.flightMode.get() == ElytraFlightModes.Bounce && BounceSettings.bounceMode != null)
+            .build()
+        );
+
         // Obstacle Passer settings ported from ElytraFlyPlusPlus:
         // https://github.com/miles352/meteor-stashhunting-addon/blob/1.21.1/src/main/java/com/stash/hunt/modules/ElytraFlyPlusPlus.java#L131-L205
         SettingGroup sgObstaclePasser = self.settings.createGroup("Obstacle Passer");
